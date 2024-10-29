@@ -2,7 +2,7 @@
 """
 hello_flask: First Python-Flask webapp
 """
-from flask import Flask, request, redirect, url_for, current_app
+from flask import Flask, request, redirect, url_for, current_app, render_template
 app = Flask(__name__, instance_relative_config=True)    # Construct an instance of Flask class for our webapp
 
 app.config.from_pyfile("config.py", 
@@ -15,6 +15,10 @@ app.config.from_pyfile("config.py",
 def main():
     """Say hello"""
     return f'Hello, world!   {app.config["SECRET_KEY"]=} {app.instance_path=} {app.template_folder=}'
+
+@app.route('/resume')
+def resume():
+    return render_template('resume.html', title='Моє резюме')
 
 @app.route('/homepage') 
 def home():

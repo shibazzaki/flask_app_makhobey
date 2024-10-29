@@ -1,0 +1,92 @@
+/* static/css/styles.css */
+body {
+    background-color: #000; /* Чорний фон */
+    color: #fff; /* Білий текст */
+    font-family: 'Courier New', Courier, monospace; /* Моноширинний шрифт для стилізації */
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    margin-left: 180px;
+}
+
+h1, h2, h3 {
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 0.1em;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ff0000; /* Червоний для контрасту на ховері */
+    transition: color 0.3s ease;
+}
+
+section {
+    padding: 50px;
+    border-bottom: 2px solid #fff;
+    text-align: center;
+}
+
+/* Анімовані елементи для абстрактності */
+.abstract {
+    border: 5px solid #fff;
+    width: 100px;
+    height: 100px;
+    margin: 50px auto;
+    animation: spin 6s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+/* Плавний ефект на появу секцій при скролі */
+section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+section.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* JavaScript для додавання класу in-view при появі секцій в полі зору */
+.navbar {
+    height: 100vh; /* Повна висота меню */
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 160px;
+    background-color: #000; /* Чорний фон */
+    border-right: 2px solid #fff; /* Контрастний акцент */
+}
+
+.navbar-nav {
+    flex-direction: column; /* Вертикальне меню */
+    height: 100%; /* Рівномірне розподілення елементів */
+    justify-content: space-around; /* Простір між елементами */
+}
+
+.nav-link {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #ff0000; /* Червоний при наведенні */
+}
+
+ul {
+    list-style-type: none;
+}

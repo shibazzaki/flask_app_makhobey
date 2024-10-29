@@ -16,9 +16,7 @@ def main():
     """Say hello"""
     return f'Hello, world!   {app.config["SECRET_KEY"]=} {app.instance_path=} {app.template_folder=}'
 
-@app.route('/resume')
-def resume():
-    return render_template('resume.html', title='Моє резюме')
+
 
 @app.route('/homepage') 
 def home():

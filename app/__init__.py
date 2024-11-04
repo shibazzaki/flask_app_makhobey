@@ -1,10 +1,12 @@
 from flask import Flask
-from .users.views import users_bp  # Імпортуємо наш Blueprint
 
-def create_app():
-    app = Flask(__name__)
 
-    # Реєструємо Blueprint для користувачів з префіксом /users
-    app.register_blueprint(users_bp, url_prefix='/users')
+app = Flask(__name__)
+app.config.from_pyfile("../config.py")
 
-    return app
+from . import views
+
+from .posts import post_bp
+from .users import bp as user_bp
+app.register_blueprint(post_bp)
+app.register_blueprint(user_bp, url_prefix="/templates")

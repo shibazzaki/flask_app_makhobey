@@ -1,18 +1,62 @@
-from flask import Blueprint, render_template, request
+from . import bp
+from flask import render_template, redirect, request, url_for, make_response, session, flash
+from datetime import timedelta, datetime
 
-# Створюємо об'єкт Blueprint з назвою 'users'
-users_bp = Blueprint('users', __name__, template_folder='templates')
+@bp.route("/profile")
+def get_profile():
+    if "username" in session:
+        username_value = session["username"]
+        return render_template("profile.html", username=username_value)
+    flash("Invalid: Session.", "danger")
+    return redirect(url_for("user_name.login"))
 
-@users_bp.route('/hi/<name>')
+@bp.route("/login",  methods=['GET', 'POST'])
+def login():
+    if request.method == "POST":
+        username = request.form["login"]
+        session["username"] = username
+        flash("Success: session added successfully.", "success")
+        return redirect(url_for("user_name.get_profile"))
+    return render_template("login.html")
+
+@bp.route('/logout')
+def logout():
+    # Видалення користувача із сесії
+    session.pop('username', None)
+    session.pop('age', None)
+    return redirect(url_for('user_name.get_profile'))
+
+
+
+@bp.route("/hi/<string:name>")   #/hi/ivan?age=45
 def greetings(name):
-    age = request.args.get("age", "невідомий вік")
-    return render_template('users/hi.html', name=name.upper(), age=age)
+    name = name.upper()
+    age = request.args.get("age", None, int)
 
-@users_bp.route('/resume')
-def resume():
-    return render_template('resume.html', title='Моє резюме')
+    return render_template("hi.html",
+                           name=name, age=age)
 
-@users_bp.route('/admin')
+@bp.route("/admin")
 def admin():
-    # Приклад простої сторінки адміністратора
-    return render_template('admin.html', role="ADMINISTRATOR", age=45)
+    to_url = url_for("user_name.greetings", name="administrator", age=45, _external=True)     # "http://localhost:8080/hi/administrator?age=45"
+    print(to_url)
+    return redirect(to_url)
+
+
+@bp.route('/set_cookie')
+def set_cookie():
+    response = make_response('Кука встановлена')
+    response.set_cookie('username', 'student', max_age=timedelta(seconds=60))
+    response.set_cookie('color', '', max_age=timedelta(seconds=60))
+    return response
+
+@bp.route('/get_cookie')
+def get_cookie():
+    username = request.cookies.get('username')
+    return f'Користувач: {username}'
+
+@bp.route('/delete_cookie')
+def delete_cookie():
+    response = make_response('Кука видалена')
+    response.set_cookie('username', '', expires=0) # response.set_cookie('username', '', max_age=0)
+    return response

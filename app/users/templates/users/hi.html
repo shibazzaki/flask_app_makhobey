@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Привіт, {{ name }}!</h1>
+    {% if age %}
+        <p>Ваш вік: {{ age }}</p>
+    {% endif %}
+
+    <!-- Вертикальне меню -->
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('users.greetings', name='John', age=30) }}">Привітання Джону</a></li>
+            <li><a href="{{ url_for('users.admin') }}">Адмін</a></li>
+            <!-- Додаткові посилання меню, якщо потрібно -->
+        </ul>
+    </nav>
+</div>
+{% endblock %}

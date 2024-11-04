@@ -9,4 +9,4 @@ from . import views
 from .posts import post_bp
 from .users import bp as user_bp
 app.register_blueprint(post_bp)
-app.register_blueprint(user_bp, url_prefix="/templates")
+app.register_blueprint(user_bp, url_prefix="/users")

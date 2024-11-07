@@ -2,6 +2,7 @@ import unittest
 from flask import url_for
 from app import app  # Імпортуємо ваш Flask-додаток
 
+
 class FlaskAppTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -11,7 +12,6 @@ class FlaskAppTestCase(unittest.TestCase):
 
         self.app_context = app.test_request_context()
         # self.app_context.push()
-
 
     def test_main_route(self):
         """Тестуємо головний маршрут"""
@@ -28,7 +28,7 @@ class FlaskAppTestCase(unittest.TestCase):
     def test_greetings(self):
         """Тестуємо маршрут привітання"""
         response = self.app.get('/hi/John?age=30')
-        
+
         with self.app_context:
             url_with_get_param = url_for("greetings", name="John", age=30)
             response = self.app.get(url_with_get_param)

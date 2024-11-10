@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Профіль</title>
+    {% if theme == 'dark' %}
+    <style>
+        body {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+    {% else %}
+    <style>
+        body {
+            background-color: #fff;
+            color: #000;
+        }
+    </style>
+    {% endif %}
+</head>
+<body>
+    <h2>Вітаємо, {{ username }}</h2>
+    <form action="{{ url_for('users.logout') }}" method="get">
+        <button type="submit">Вийти</button>
+    </form>
+
+    <!-- Відображення кукі та керування ними -->
+    <h3>Керування кукі:</h3>
+    <form method="POST" action="{{ url_for('users.add_cookie') }}">
+        <label for="key">Ключ:</label>
+        <input type="text" name="key" required><br>
+        <label for="value">Значення:</label>
+        <input type="text" name="value" required><br>
+        <label for="duration">Термін дії (у секундах):</label>
+        <input type="number" name="duration" required><br>
+        <button type="submit">Додати кукі</button>
+    </form>
+    <form method="POST" action="{{ url_for('users.delete_cookie') }}">
+        <label for="key">Ключ для видалення:</label>
+        <input type="text" name="key" required><br>
+        <button type="submit">Видалити кукі</button>
+    </form>
+
+    <!-- Відображення поточних кукі -->
+    <h3>Поточні кукі:</h3>
+    <ul>
+        {% for key, value in cookies.items() %}
+            <li>{{ key }}: {{ value }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Вибір кольорової схеми -->
+    <h3>Вибір кольорової схеми:</h3>
+    <a href="{{ url_for('users.set_theme', theme='light') }}">Світла тема</a> |
+    <a href="{{ url_for('users.set_theme', theme='dark') }}">Темна тема</a>
+
+    <!-- Flash-повідомлення -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

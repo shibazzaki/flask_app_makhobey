@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">All Posts</h2>
+    <div class="row">
+        {% for post in posts %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ post.category }}</h6>
+                    <p class="card-text">{{ post.content[:100] }}...</p>
+                    <p class="text-muted">Author: {{ post.author }}</p>
+                    <p class="text-muted">Published: {{ post.publication_date }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

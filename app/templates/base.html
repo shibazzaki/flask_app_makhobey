@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMKL7t27Anj6ZjzW4QldH8u4oTfP6K5j3l5qF6i9h4USj7xZ" crossorigin="anonymous">
 </head>
 <body>
 
@@ -15,8 +16,21 @@
     </header>
 
     <div class="container">
-        {% block content %}{% endblock %}
+    <!-- Відображення Flash-повідомлень -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} mt-3">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
     </div>
+
 
     <script>
         // JavaScript для плавного появлення секцій при скролінгу

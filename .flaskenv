@@ -2,3 +2,5 @@ FLASK_DEBUG=1
 FLASK_APP=app.py
 FLASK_RUN_PORT=8080
 FLASK_ENV=development #deprecated
+SECRET_KEY=a9X#3&lKp^9!zUx@4Rm7Q0rY2wTpV5L6
+

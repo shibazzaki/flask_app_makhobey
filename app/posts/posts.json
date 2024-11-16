@@ -7,5 +7,14 @@
         "is_active": true,
         "publication_date": "2024-11-12",
         "author": "Anonymous"
+    },
+    {
+        "id": 2,
+        "title": "new post",
+        "content": "oh my gosh is that true tho?",
+        "category": "tech",
+        "is_active": false,
+        "publication_date": "2024-11-16",
+        "author": "Anonymous"
     }
 ]

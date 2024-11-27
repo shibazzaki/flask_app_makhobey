@@ -16,37 +16,28 @@ def detail_post(id):
     return render_template('detail_post.html', post=post)
 
 
-
 @post_bp.route('/add', methods=['GET', 'POST'])
 def add_post():
     form = PostForm()
     if form.validate_on_submit():
-        try:
-            # Логування введених даних
-            print("Form Data:", form.data)
+        # Створення нового поста
+        post = Post(
+            title=form.title.data,
+            content=form.content.data,
+            is_active=form.is_active.data,
+            category=form.category.data,
+            posted=form.publication_date.data,
+            author=form.author.data
+        )
 
-            # Створення нового поста
-            new_post = Post(
-                title=form.title.data,
-                content=form.content.data,
-                category=form.category.data,
-                is_active=form.is_active.data,
-                posted=form.publication_date.data,
-                author=form.author.data
-            )
-            db.session.add(new_post)
-            db.session.commit()
+        # Додаємо вибрані теги до поста
+        for tag in form.tags.data:
+            post.tags.append(tag)
 
-            # Логування успішного збереження
-            print(f"Post '{new_post.title}' added successfully!")
-
-            flash(f"Post '{new_post.title}' added successfully!", "success")
-            return redirect(url_for('posts.get_posts'))
-        except Exception as e:
-            print("Error:", str(e))  # Логування помилки
-            flash("An error occurred while adding the post.", "danger")
-    else:
-        print("Form Validation Errors:", form.errors)  # Логування помилок валідації
+        db.session.add(post)
+        db.session.commit()
+        flash(f"Post '{post.title}' added successfully!", "success")
+        return redirect(url_for('posts.all_posts'))
     return render_template('add_post.html', form=form)
 
 

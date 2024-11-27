@@ -16,7 +16,7 @@ class Post(db.Model):
     content = db.Column(db.Text, nullable=False)
     posted = db.Column(db.DateTime, default=db.func.current_timestamp())
     is_active = db.Column(db.Boolean, default=True)
-
+    category = db.Column(db.String(50), nullable=False)  # Додано поле category
     # Вказуємо ім'я для ForeignKey
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', name='fk_user_post'))
     author = db.relationship('User', back_populates='posts')

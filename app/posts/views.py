@@ -1,72 +1,85 @@
 from . import post_bp
-from flask import render_template, abort, flash, redirect, url_for, session
-import json
+from flask import render_template, abort, flash, redirect, url_for, request
+from .. import db
+from ..models import Post
 from .forms import PostForm
-import os
-
-posts = [
-    {"id": 1, 'title': 'My First Post', 'content': 'This is the content of my first post.', 'author': 'Vlad'},
-    {"id": 2, 'title': 'Another Day', 'content': 'Today I learned about Flask macros.', 'author': 'Jane Smith'},
-    {"id": 3, 'title': 'Flask and Jinja2', 'content': 'Jinja2 is powerful for templating.', 'author': 'Mike Lee'}
-]
 
 @post_bp.route('/')
 def get_posts():
-    return render_template("posts.html", posts=posts)
+    """Відображення всіх постів"""
+    posts = Post.query.order_by(Post.posted.desc()).all()
+    return render_template("all_posts.html", posts=posts)
 
 @post_bp.route('/<int:id>')
 def detail_post(id):
-    if id > 3:
-        abort(404)
-    post = posts[id-1]
-    return render_template("detail_post.html", post=post)
+    post = Post.query.get_or_404(id)  # Отримання поста за ID або повернення 404
+    return render_template('detail_post.html', post=post)
 
-@post_bp.route('/add_post', methods=['GET', 'POST'])
+
+
+@post_bp.route('/add', methods=['GET', 'POST'])
 def add_post():
     form = PostForm()
     if form.validate_on_submit():
-        # Створення поста
-        post = {
-            "id": get_next_id(),
-            "title": form.title.data,
-            "content": form.content.data,
-            "category": form.category.data,
-            "is_active": form.is_active.data,
-            "publication_date": form.publication_date.data.isoformat(),
-            "author": session.get('username', 'Anonymous')
-        }
-        save_post(post)
-        flash(f"Post '{post['title']}' added successfully!", 'success')
-        return redirect(url_for('posts.add_post'))
+        try:
+            # Логування введених даних
+            print("Form Data:", form.data)
+
+            # Створення нового поста
+            new_post = Post(
+                title=form.title.data,
+                content=form.content.data,
+                category=form.category.data,
+                is_active=form.is_active.data,
+                posted=form.publication_date.data,
+                author=form.author.data
+            )
+            db.session.add(new_post)
+            db.session.commit()
+
+            # Логування успішного збереження
+            print(f"Post '{new_post.title}' added successfully!")
+
+            flash(f"Post '{new_post.title}' added successfully!", "success")
+            return redirect(url_for('posts.get_posts'))
+        except Exception as e:
+            print("Error:", str(e))  # Логування помилки
+            flash("An error occurred while adding the post.", "danger")
+    else:
+        print("Form Validation Errors:", form.errors)  # Логування помилок валідації
     return render_template('add_post.html', form=form)
 
-def get_next_id():
-    if not os.path.exists("app/posts/posts.json"):
-        return 1
-    with open("app/posts/posts.json", "r") as f:
-        try:
-            posts = json.load(f)
-            if not posts:
-                return 1
-            return max(post["id"] for post in posts) + 1
-        except json.JSONDecodeError:
-            return 1
+
+@post_bp.route('/delete/<int:id>', methods=['GET', 'POST'])
+def delete_post(id):
+    post = Post.query.get_or_404(id)
+    if request.method == 'POST':
+        db.session.delete(post)
+        db.session.commit()
+        flash(f"Post '{post.title}' deleted successfully!", "success")
+        return redirect(url_for('posts.get_posts'))
+    return render_template('delete_post.html', post=post)
 
 
-def save_post(post):
-    posts = []
-    if os.path.exists("app/posts/posts.json"):
-        with open("app/posts/posts.json", "r") as f:
-            posts = json.load(f)
-    posts.append(post)
-    with open("app/posts/posts.json", "w") as f:
-        json.dump(posts, f, indent=4)
 
-@post_bp.route('/all_posts')
-def all_posts():
-    posts = []
-    if os.path.exists("app/posts/posts.json"):
-        with open("app/posts/posts.json", "r") as f:
-            posts = json.load(f)
-    return render_template('all_posts.html', posts=posts)
+@post_bp.route('/inactive')
+def inactive_posts():
+    posts = Post.query.filter_by(is_active=False).order_by(Post.posted.desc()).all()
+    return render_template('inactive_posts.html', posts=posts)
+
+@post_bp.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit_post(id):
+    post = Post.query.get_or_404(id)
+    form = PostForm(obj=post)
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        post.category = form.category.data
+        post.is_active = form.is_active.data
+        post.posted = form.publication_date.data
+        post.author = form.author.data
+        db.session.commit()
+        flash(f"Post '{post.title}' updated successfully!", "success")
+        return redirect(url_for('posts.get_posts'))
+    return render_template('edit_post.html', form=form, post=post)
 

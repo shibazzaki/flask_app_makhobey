@@ -1,7 +1,12 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% extends 'base.html' %}
+
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-center mb-4" style="color: #00d4ff;">Add New Post</h2>
+    <h2 class="text-center mb-4" style="color: #00d4ff;">Edit Post</h2>
     <form method="POST" action="" novalidate class="shadow-lg p-4 bg-dark text-white rounded">
         {{ form.hidden_tag() }}
         {% from 'form_macros.html' import render_field %}
@@ -19,7 +24,7 @@
             {{ render_field(form.publication_date) }}
         </div>
         <div class="mb-3">
-            {{ render_field(form.author) }} <!-- Поле Author -->
+            {{ render_field(form.author) }}
         </div>
         <div class="form-check mb-3">
             {{ render_field(form.is_active) }}
@@ -31,3 +36,9 @@
     </form>
 </div>
 {% endblock %}
+</title>
+</head>
+<body>
+
+</body>
+</html>
